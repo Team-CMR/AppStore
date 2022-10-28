@@ -13,6 +13,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  padding: 0% !important;
+
+  width: 100% !important;
 }
 
 a {
@@ -68,3 +72,39 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Articulos index */
+.css-1gwv7ie-MuiCardMedia-root {
+  padding-top: 0% !important;
+}
+
+.css-480o17-MuiGrid-root {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.css-480o17-MuiGrid-root>.MuiGrid-item {
+  padding: 5% !important;
+}
+
+.css-jcfe1v-MuiContainer-root {
+  padding: 0% !important;
+}
+
+/* Articulos index */
+
+
+/* Pagination */
+.css-1oj2twp-MuiPagination-root {
+  width: 100%;
+}
+
+.css-wjh20t-MuiPagination-ul {
+  justify-content: center !important;
+}
+
+.css-1mcnwpj-MuiList-root {
+  margin-top: 10% !important;
+}
+
+/* Pagination */

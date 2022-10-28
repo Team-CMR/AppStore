@@ -3,6 +3,10 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  padding: 0%;
+  margin: 0%;
+  width: 100%;
+
 }
 
 .logo {
@@ -10,9 +14,11 @@
   padding: 1.5em;
   will-change: filter;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -21,6 +27,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,3 +46,40 @@
 .read-the-docs {
   color: #888;
 }
+
+
+/* Articulos index */
+.css-1gwv7ie-MuiCardMedia-root {
+  padding-top: 0% !important;
+}
+
+.css-480o17-MuiGrid-root {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.css-480o17-MuiGrid-root>.MuiGrid-item {
+  padding: 5% !important;
+}
+
+.css-jcfe1v-MuiContainer-root {
+  padding: 0% !important;
+}
+
+/* Articulos index */
+
+
+/* Pagination */
+.css-1oj2twp-MuiPagination-root {
+  width: 100%;
+}
+
+.css-wjh20t-MuiPagination-ul {
+  justify-content: center !important;
+}
+
+.css-1mcnwpj-MuiList-root {
+  margin-top: 10% !important;
+}
+
+/* Pagination */

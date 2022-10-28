@@ -19,47 +19,17 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { useForm, useWatch } from "react-hook-form";
 
 // 
 // import SyncStorage from 'sync-storage';
-// import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 // Pagination
 import usePagination from "../template/PaginationCustom";
 
 
-// 
-let JsonArticulos = [];
-let CountProduct = 0;
-
 export default function GridArticulos() {
-
-    // Get articulos
     const [articulos, setArticulos] = React.useState([]);
-    React.useEffect(() => {
-        axios.get('http://localhost:8004/api/articulos').then((response) => {
-            setArticulos(response.data);
-        });
-    }, []);
-    // Get articulos
-
-    if (!articulos) return null;
-
-    const handleChangeSelect = (event) => {
-        // console.log(watch("SelectCountArticulo"))
-        // setCountArticuloBuy(watch("SelectCountArticulo"));
-        // setCountArticuloBuy(event.target.value);
-        // let articuloToBuy = {
-        //     count: event.target.value,
-        //     idArticulo: event.target.name
-        // }
-
-        // setArticuloBuy(articuloToBuy)
-        // console.log(articuloToBuy)
-    };
-
-    // Pagination
     const [page, setPage] = useState(1);
     const PER_PAGE = 10;
 
@@ -68,41 +38,45 @@ export default function GridArticulos() {
         _DATA.jump(p);
     };
 
+    React.useEffect(() => {
+        axios.get('http://localhost:8004/api/articulos').then((response) => {
+            setArticulos(response.data);
+        });
+    }, []);
+
+    if (!articulos) return null;
+
     const count = Math.ceil(articulos.length / PER_PAGE);
     const _DATA = usePagination(articulos, PER_PAGE);
-    // Pagination
-
-
-    // Set articulo to buy
-    // const { register, handleSubmit } = useForm();
-    const onSubmit = data => {
-        // console.log(data);
-        // console.log(watch("SelectCountArticulo"))
-    }
-    // Set articulo to buy
-
 
     const [countArticuloBuy, setCountArticuloBuy] = React.useState('');
     const [articuloBuy, setArticuloBuy] = React.useState('');
 
-    const changeSelect = (e) => {
-        // console.log(e.target.value)
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const onSubmit = data => {
+        console.log(data);
     }
+    // console.log(watch("SelectCountArticulo"));
 
-    const { register, control } = useForm({
-        SelectCountArticulo: "test"
-    });
+    // const { register, handleSubmit } = useForm();
+    // const onSubmit = data => console.log(data);
+  
 
-    function Child({ control }) {
-        const SelectCountArticulo = useWatch({
-            control,
-            name: "SelectCountArticulo",
-        });
+    const handleChangeSelect = (event) => {
+        // setCountArticuloBuy(watch("SelectCountArticulo"));
+        setCountArticuloBuy(event.target.value);
+        let articuloToBuy = {
+            count: event.target.value,
+            idArticulo: event.target.name
+        }
 
-        // console.log(SelectCountArticulo)
-        CountProduct = SelectCountArticulo
-        // return SelectCountArticulo;
-        // return <p>Watch: {firstName}</p>;
+        setArticuloBuy(articuloToBuy)
+        console.log(articuloToBuy)
+    };
+
+    const SetDataArticuloBuy = (e) => {
+        e.preventDefault();
+        console.log(articuloBuy)
     }
 
     return (
@@ -130,18 +104,15 @@ export default function GridArticulos() {
                             </CardContent>
                             <CardActions>
                                 <Box sx={{ minWidth: 120 }}>
-                                    <FormControl fullWidth
-                                    // onSubmit={handleSubmit(onSubmit)} 
-                                    // onChange={changeSelect}
-                                    >
+                                    <FormControl fullWidth onSubmit={handleSubmit(onSubmit)}>
                                         <InputLabel id="select-count-articulo-label">Count</InputLabel>
                                         <Select
                                             labelId="select-count-articulo-label"
                                             id={articulo.cod_Barras}
-                                            // value={SelectCountArticulo}
+                                            value={countArticuloBuy}
                                             name={articulo.cod_Barras}
                                             label="Count"
-                                            // onChange={handleChangeSelect}
+                                            onChange={handleChangeSelect}
                                             {...register("SelectCountArticulo")}
                                         >
                                             <MenuItem value={1}>1</MenuItem>
@@ -155,20 +126,9 @@ export default function GridArticulos() {
                                             <MenuItem value={9}>9</MenuItem>
                                             <MenuItem value={10}>10</MenuItem>
                                         </Select>
-                                        <Child control={control} />
                                     </FormControl>
                                 </Box>
-                                <Button variant="contained" type="submit" onClick={() => {
-                                    // alert('clicked');
-                                    console.log(articulo)
-                                    let articuloJson = {
-                                        barcode: articulo.cod_Barras,
-                                        cantidad: CountProduct,
-                                        precio: articulo.precio_Venta
-                                    }
-                                    JsonArticulos.push(articuloJson)
-                                    console.log(JsonArticulos)
-                                }}>Agregar</Button>
+                                <Button variant="contained" type="submit" onClick={SetDataArticuloBuy}>Agregar</Button>
                             </CardActions>
                         </Card>
                     </Grid>);
