@@ -108,3 +108,18 @@ button:focus-visible {
 }
 
 /* Pagination */
+
+
+/* FORM MODAL */
+.ForGroupModal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ForGroupModal input {
+  padding: 8px;
+  border: 1px solid #CCCEEE;
+  margin: 1% 0;
+}
+/* FORM MODAL */
