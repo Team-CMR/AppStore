@@ -118,13 +118,15 @@ export default function GridArticulos() {
             <Box
                 sx={{
                     bgcolor: 'background.paper',
-                    pt: 8,
-                    pb: 6,
+                    pt: 0,
+                    pb: 1,
                 }}
             >
+
+
                 <Container maxWidth="sm">
                     <Stack
-                        sx={{ pt: 4 }}
+                        sx={{ pt: 0 }}
                         direction="row"
                         spacing={2}
                         justifyContent="center"
@@ -182,22 +184,56 @@ export default function GridArticulos() {
                         }}>Comprar</Button>
 
                         <Button variant="contained" type="submit" onClick={() => {
-                            let FormEditCar = `<form>`
+                            // let FormEditCar = `<form>`
+                            let FormEditCar = `
+                            <table class="table-modal-car"">
+                                <thead class="thead-edit-car">
+                                    <tr class="tr-thead">
+                                        <th class="" scope="col-4">Producto</th>
+                                        <th class="" scope="col-3">Descripción</th>
+                                        <th class="" scope="col-5">Barcode</th>
+                                        <th class="" scope="col-2">Precio</th>
+                                        <th class="" scope="col-1">Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="tbody-edit-car">
+                            `
                             JsonArticulos.forEach(articulo => {
                                 console.log(articulo)
-
                                 FormEditCar += `
-                                    <div class="ForGroupModal">
-                                        <input type="text" id="BR_${articulo.Barcode}" value="${articulo.Barcode}" placeholder="Articulo" />
-                                        <input type="text" id="CN_${articulo.Barcode}" value="${articulo.Cantidad}" placeholder="Cantidad" />
-                                        <input type="text" id="PU_${articulo.Barcode}" value="${articulo.PrecioUnidad}" placeholder="Precio" />
-                                    </div>
-                                    <hr>
+                                        <tr class="tr-tbody">
+                                            <td class="">${articulo.Descripcion}</th>
+                                            <td class="">${articulo.Descripcion_Corta}</th>
+                                            <td class="" id="BR_${articulo.Barcode}">${articulo.Barcode}</th>
+                                            <td class="" id="PU_${articulo.Barcode}">${articulo.PrecioUnidad}</th>
+                                            <td class="">
+                                                <input id="CN_${articulo.Barcode}" value="${articulo.Cantidad}" class="inp-table-modal" type="number" />
+                                            </th>
+                                        </tr>
                                 `
+
+                                // FormEditCar += `
+                                //     <div class="ForGroupModal">
+                                //         <p class="nombre-articulo">${articulo.Descripcion}</p>
+                                //         <p class="descripcion-articulo">${articulo.Descripcion_Corta}</p>
+                                //         <p class="barcode-articulo" id="BR_${articulo.Barcode}">${articulo.Barcode}</p>
+                                //         <p class="precio-articulo" id="PU_${articulo.Barcode}">${articulo.PrecioUnidad}</p>
+                                //         <input type="text" id="CN_${articulo.Barcode}" value="${articulo.Cantidad}" placeholder="Cantidad" />
+                                //     </div>
+                                //     <hr>
+                                // `
+                                // FormEditCar += `
+                                // `
+                                // <input type="text" id="PU_${articulo.Barcode}" value="${articulo.PrecioUnidad}" placeholder="Precio" />
                             });
+                            // FormEditCar += `
+                            //     </form>
+                            // `
                             FormEditCar += `
-                                </form>
+                                </tbody>
+                            </table>
                             `
+
                             let NewJsonArticulo = []
 
                             Swal.fire({
@@ -221,19 +257,6 @@ export default function GridArticulos() {
                                         console.log(NewJsonArticulo)
 
                                     });
-
-                                    // return fetch(`//api.github.com/users/${login}`)
-                                    //     .then(response => {
-                                    //         if (!response.ok) {
-                                    //             throw new Error(response.statusText)
-                                    //         }
-                                    //         return response.json()
-                                    //     })
-                                    //     .catch(error => {
-                                    //         Swal.showValidationMessage(
-                                    //             `Request failed: ${error}`
-                                    //         )
-                                    //     })
                                 },
                                 allowOutsideClick: () => !Swal.isLoading()
                             }).then((result) => {
@@ -247,9 +270,9 @@ export default function GridArticulos() {
                                             const b = Swal.getHtmlContainer().querySelector('b')
                                         },
                                     })
-        
+
                                     var data = JSON.stringify(JsonArticulos);
-        
+
                                     var config = {
                                         method: 'post',
                                         url: 'http://localhost:8004/api/venta-aprobado',
@@ -258,7 +281,7 @@ export default function GridArticulos() {
                                         },
                                         data: data
                                     };
-        
+
                                     axios(config)
                                         .then(function (response) {
                                             console.log(response)
@@ -276,7 +299,7 @@ export default function GridArticulos() {
                                                         toast.addEventListener('mouseleave', Swal.resumeTimer)
                                                     }
                                                 })
-        
+
                                                 Toast.fire({
                                                     icon: 'success',
                                                     title: 'Sale registered'
@@ -286,114 +309,126 @@ export default function GridArticulos() {
                                         .catch(function (error) {
                                             console.log(error);
                                         });
-                                        }
+                                }
                             })
 
 
                         }}>Edit car</Button>
                     </Stack>
                 </Container>
+
+                <Container maxWidth="sm">
+                    <Stack
+                        sx={{ pt: 0 }}
+                        direction="row"
+                        spacing={2}
+                        justifyContent="center"
+                    >
+                        <Grid container spacing={4}>
+                            {_DATA.currentData().map((articulo) => {
+                                return (
+                                    <Grid item key={articulo.cod_Barras} xs={12} sm={5} md={4}>
+                                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                            <CardMedia
+                                                component="img"
+                                                sx={{
+                                                    // 16:9
+                                                    pt: '56.25%',
+                                                }}
+                                                image="src/assets/images/default.png"
+                                                alt="random"
+                                            />
+                                            <CardContent sx={{ flexGrow: 1 }}>
+                                                <Typography gutterBottom variant="h5" component="h2">
+                                                    {articulo.descripcion}
+                                                </Typography>
+                                                <Typography>
+                                                    {articulo.descripcion_Corta}
+                                                </Typography>
+                                            </CardContent>
+                                            <CardActions>
+                                                <Box sx={{ minWidth: 120 }}>
+                                                    <FormControl fullWidth
+                                                    // onSubmit={handleSubmit(onSubmit)} 
+                                                    // onChange={changeSelect}
+                                                    >
+                                                        <InputLabel id="select-count-articulo-label">Count</InputLabel>
+                                                        <Select
+                                                            labelId="select-count-articulo-label"
+                                                            id={articulo.cod_Barras}
+                                                            // value={SelectCountArticulo}
+                                                            name={articulo.cod_Barras}
+                                                            label="Count"
+                                                            // onChange={handleChangeSelect}
+                                                            {...register("SelectCountArticulo")}
+                                                        >
+                                                            <MenuItem value={1}>1</MenuItem>
+                                                            <MenuItem value={2}>2</MenuItem>
+                                                            <MenuItem value={3}>3</MenuItem>
+                                                            <MenuItem value={4}>4</MenuItem>
+                                                            <MenuItem value={5}>5</MenuItem>
+                                                            <MenuItem value={6}>6</MenuItem>
+                                                            <MenuItem value={7}>7</MenuItem>
+                                                            <MenuItem value={8}>8</MenuItem>
+                                                            <MenuItem value={9}>9</MenuItem>
+                                                            <MenuItem value={10}>10</MenuItem>
+                                                        </Select>
+                                                        <Child control={control} />
+                                                    </FormControl>
+                                                </Box>
+                                                <Button variant="contained" type="submit" onClick={() => {
+                                                    console.log(articulo)
+                                                    let articuloJson = {
+                                                        Barcode: articulo.cod_Barras,
+                                                        Descripcion: articulo.descripcion,
+                                                        Descripcion_Corta: articulo.descripcion_Corta,
+                                                        Cantidad: CountProduct,
+                                                        PrecioUnidad: articulo.precio_Venta
+                                                    }
+
+                                                    JsonArticulos.push(articuloJson)
+                                                    console.log(JsonArticulos)
+
+                                                    const Toast = Swal.mixin({
+                                                        toast: true,
+                                                        position: 'bottom-end',
+                                                        showConfirmButton: false,
+                                                        timer: 2000,
+                                                        timerProgressBar: true,
+                                                        color: '#FFFFFF',
+                                                        background: '#17A2B8',
+                                                        didOpen: (toast) => {
+                                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                        }
+                                                    })
+
+                                                    Toast.fire({
+                                                        icon: 'success',
+                                                        title: 'Product added'
+                                                    })
+                                                }}>Agregar</Button>
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>);
+                            })}
+
+                            <Pagination
+                                count={count}
+                                page={page}
+                                color="primary"
+                                onChange={handleChange}
+                            />
+                        </Grid >
+                    </Stack>
+                </Container>
             </Box>
-            <Grid container spacing={4}>
-                {_DATA.currentData().map((articulo) => {
-                    return (
-                        <Grid item key={articulo.cod_Barras} xs={12} sm={5} md={4}>
-                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                <CardMedia
-                                    component="img"
-                                    sx={{
-                                        // 16:9
-                                        pt: '56.25%',
-                                    }}
-                                    image="src/assets/images/default.png"
-                                    alt="random"
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {articulo.descripcion}
-                                    </Typography>
-                                    <Typography>
-                                        {articulo.descripcion_Corta}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Box sx={{ minWidth: 120 }}>
-                                        <FormControl fullWidth
-                                        // onSubmit={handleSubmit(onSubmit)} 
-                                        // onChange={changeSelect}
-                                        >
-                                            <InputLabel id="select-count-articulo-label">Count</InputLabel>
-                                            <Select
-                                                labelId="select-count-articulo-label"
-                                                id={articulo.cod_Barras}
-                                                // value={SelectCountArticulo}
-                                                name={articulo.cod_Barras}
-                                                label="Count"
-                                                // onChange={handleChangeSelect}
-                                                {...register("SelectCountArticulo")}
-                                            >
-                                                <MenuItem value={1}>1</MenuItem>
-                                                <MenuItem value={2}>2</MenuItem>
-                                                <MenuItem value={3}>3</MenuItem>
-                                                <MenuItem value={4}>4</MenuItem>
-                                                <MenuItem value={5}>5</MenuItem>
-                                                <MenuItem value={6}>6</MenuItem>
-                                                <MenuItem value={7}>7</MenuItem>
-                                                <MenuItem value={8}>8</MenuItem>
-                                                <MenuItem value={9}>9</MenuItem>
-                                                <MenuItem value={10}>10</MenuItem>
-                                            </Select>
-                                            <Child control={control} />
-                                        </FormControl>
-                                    </Box>
-                                    <Button variant="contained" type="submit" onClick={() => {
-                                        let articuloJson = {
-                                            Barcode: articulo.cod_Barras,
-                                            Cantidad: CountProduct,
-                                            PrecioUnidad: articulo.precio_Venta
-                                        }
-
-                                        JsonArticulos.push(articuloJson)
-                                        console.log(JsonArticulos)
-
-                                        const Toast = Swal.mixin({
-                                            toast: true,
-                                            position: 'bottom-end',
-                                            showConfirmButton: false,
-                                            timer: 2000,
-                                            timerProgressBar: true,
-                                            color: '#FFFFFF',
-                                            background: '#17A2B8',
-                                            didOpen: (toast) => {
-                                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                            }
-                                        })
-
-                                        Toast.fire({
-                                            icon: 'success',
-                                            title: 'Product added'
-                                        })
-                                    }}>Agregar</Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>);
-                })}
-
-                <Pagination
-                    count={count}
-                    page={page}
-                    color="primary"
-                    onChange={handleChange}
-                />
-            </Grid >
         </>
-
     );
 }
 
 
-<template id="my-template">
+{/* <template id="my-template">
     <swal-title>
         Save changes to "Untitled 1" before closing?
     </swal-title>
@@ -414,4 +449,4 @@ export default function GridArticulos() {
     <swal-function-param
         name="didOpen"
         value="popup => console.log(popup)" />
-</template>
+</template> */}

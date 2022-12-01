@@ -22,16 +22,15 @@ import Container from '@mui/material/Container';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
 
-
-
-import { Component } from 'react';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-// import Editor from 'react-native-mentions-editor';
-import Editor from 'react-medium-editor';
-
-
 // Custom views
 import GaleryArticulos from '../index/GaleryArticulos'
+
+
+
+
+
+
+
 
 const drawerWidth = 240;
 
@@ -100,212 +99,114 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+const { search } = Input;
+const { Text } = Typography;
+let historialMensajes = [];
 
-
-
-const client = new WebSocket('ws://127.0.0.1:8000');
-const contentDefaultMessage = "Start writing your document here";
-
-
-class AppChat extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUsers: [],
-      userActivity: [],
-      username: null,
-      text: ''
-    };
-  }
-
-  logInUser = () => {
-    const username = this.username.value;
-    if (username.trim()) {
-      const data = {
-        username
-      };
-      this.setState({
-        ...data
-      }, () => {
-        client.send(JSON.stringify({
-          ...data,
-          type: "userevent"
-        }));
-      });
-    }
-  }
-
-
-  setDataMessage = (e) => {
-    if (e.code === 'Enter') {
-      // console.log(document.getElementById("inpMessageUser").value);
-      let historialMessages = document.getElementById("txtHistorialMessages").innerHTML
-
-      let mensajeUsuario = document.getElementById("inpMessageUser").value;
-
-      console.log('historialMessages')
-      console.log(historialMessages)
-      var auxP = document.createElement("p");
-
-      if(historialMessages != ""){
-        // document.getElementById("txtHistorialMessages").innerHTML = historialMessages + newP.innerText
-        
-        var newDiv = document.createElement("br");
-        var newBr = document.createElement("br");
-        var newP = document.createElement("p");
-        var newContent = document.createTextNode(historialMessages + auxP.innerText + mensajeUsuario);
-        newP.appendChild(newContent);
-        
-        
-      } else {
-        var newP = document.createElement("p");
-        var newContent = document.createTextNode(mensajeUsuario);
-        newP.appendChild(newContent);
-        
-      }
-      
-      this.onEditorStateChange(newP.innerHTML+ " | ");
-    }
-  }
-  /* When content changes, we send the
-current content of the editor to the server. */
-  onEditorStateChange = (text) => {
-    console.log(text)
-    
-    client.send(JSON.stringify({
-      type: "contentchange",
-      username: this.state.username,
-      content: text
-    }));
-    
-
-
-  };
-
-  componentWillMount() {
-    client.onopen = () => {
-      console.log('WebSocket Client Connected');
-    };
-    client.onmessage = (message) => {
-      const dataFromServer = JSON.parse(message.data);
-      const stateToChange = {};
-      if (dataFromServer.type === "userevent") {
-        stateToChange.currentUsers = Object.values(dataFromServer.data.users);
-      } else if (dataFromServer.type === "contentchange") {
-        stateToChange.text = dataFromServer.data.editorContent || contentDefaultMessage;
-      }
-      stateToChange.userActivity = dataFromServer.data.userActivity;
-      this.setState({
-        ...stateToChange
-      });
-    };
-  }
-
-  showLoginSection = () => (
-    <div className="account">
-      <div className="account__wrapper">
-        <div className="account__card">
-          <div className="account__profile">
-            {/* <Identicon className="account__avatar" size={64} string="randomness" /> */}
-            <p className="account__name">Hello, user!</p>
-            <p className="account__sub">Join to edit the document</p>
-          </div>
-          <input name="username" ref={(input) => { this.username = input; }} className="form-control" />
-          <button type="button" onClick={() => this.logInUser()} className="btn btn-primary account__btn">Join</button>
-        </div>
-      </div>
-    </div>
-  )
-
-
-  showEditorSection = () => (
-    <div className="main-content">
-      <div className="document-holder">
-        <div className="currentusers">
-          {this.state.currentUsers.map(user => (
-            <React.Fragment>
-              <span id={user.username} className="userInfo" key={user.username}>
-                {/* <Identicon className="account__avatar" style={{ backgroundColor: user.randomcolor }} size={40} string={user.username} /> */}
-                <p>{user.username}</p>
-              </span>
-              {/* <UncontrolledTooltip placement="top" target={user.username}>
-              {user.username}
-            </UncontrolledTooltip> */}
-            </React.Fragment>
-          ))}
-        </div>
-
-          <div id='HistorialMensages'></div>
-
-
-        <Editor
-          options={{
-            placeholder: {
-              text: this.state.text ? contentDefaultMessage : ""
-            }
-          }}
-          id="txtHistorialMessages"
-          className="body-editor"
-          text={this.state.text}
-          onChange={this.onEditorStateChange}
-        />
-
-        {/* <TextareaAutosize
-          aria-label="empty textarea"
-          placeholder="Empty"
-          style={{ width: 200 }}
-
-          options={{
-            placeholder: {
-              text: this.state.text ? contentDefaultMessage : ""
-            }
-          }}
-          id="txtHistorialMessages"
-          className="body-editor"
-          text={this.state.text}
-          onChange={this.onEditorStateChange}
-        /> */}
-
-        <span>Escribe tu mensaje</span>
-        <Input type="text" options={{
-          placeholder: {
-            text: this.state.text ? contentDefaultMessage : ""
-          }
-        }}
-          className="body-editor"
-          // text={this.state.text}
-          id="inpMessageUser"
-          onKeyUp={this.setDataMessage} />
-      </div>
-      <div className="history-holder">
-        <ul>
-          {this.state.userActivity.map((activity, index) => <li key={`activity-${index}`}>{activity}</li>)}
-        </ul>
-      </div>
-    </div>
-  )
-
-  render() {
-    const {
-      username
-    } = this.state;
-    return (
-      <React.Fragment>
-        {/* <Navbar color="light" light>
-        <NavbarBrand href="/">Real-time document editor</NavbarBrand>
-      </Navbar> */}
-        <div className="container-fluid">
-          {username ? this.showEditorSection() : this.showLoginSection()}
-        </div>
-      </React.Fragment>
-    );
-  }
-
-
-
-
-
+let state = {
+  userName: '',
+  isLoggedIn: false,
+  messages: []
 }
+let initChat = false;
+
+const setLoginData = () => {
+  let UserChat = document.getElementById("inpUsernameChat").value
+  
+  state.userName = UserChat
+  state.isLoggedIn = true
+  document.getElementById("pNombreUsuario").innerHTML = UserChat
+  console.log(state)
+}
+
+const setInitChat = () => {
+  initChat = true;
+  document.getElementById("contentInitChat").style.display = "none"
+  document.getElementById("contentChat").style.display = "block"
+}
+
+
+// setInterval(() => {
+// console.log("escuchando")
+// client.onopen = () => {
+//   console.log('Client conected')
+// }
+// client.onmessage = (message) => {
+//   const dataFromServer = JSON.parse(message.data)
+//   console.log(`Got reply ${dataFromServer.msg}`)
+
+//   if (dataFromServer.type === "message") {
+//     // state.message.push(dataFromServer.msg)
+//     // console.log(state.message)
+//     historialMensajes.push(dataFromServer.msg)
+//     console.log(historialMensajes)
+//     client.close = (e) => {
+//       // connection closed
+//       console.log(e.code, e.reason);
+//     };
+//     // setState((state) => ({
+//     //   message: [...state.message,
+//     //   {
+//     //     msg: dataFromServer.msg,
+//     //     user: dataFromServer.user
+//     //   }]
+//     // }))
+//   }
+// }
+// }, 1000);
+
+
+
+var client = new WebSocket('ws://127.0.0.1:8000');
+
+// Variables
+const miWebSocket = new WebSocket('ws://127.0.0.1:8000');
+const miNuevoMensaje = document.getElementById('#nuevo-mensaje');
+
+// Funciones
+function open() {
+  // Abre conexión
+  console.log("WebSocket abierto.");
+}
+
+async function message(evento) {
+  let misRespuestas = document.getElementById("respuestas");
+
+  // Se recibe un mensaje
+  console.log("WebSocket ha recibido un mensaje");
+  // Mostrar mensaje en HTML
+  console.log(evento)
+  console.log(evento.data)
+  const mensajeRecibido = await evento.data; // Arreglo para Node ya que devuelve Blob. Solo con 'evento.data' debería ser suficient
+  console.log(misRespuestas)
+  misRespuestas.innerHTML = misRespuestas.innerHTML.concat(mensajeRecibido, '<br>');
+}
+
+function error(evento) {
+  // Ha ocurrido un error
+  console.error("WebSocket ha observado un error: ", evento);
+}
+
+function close() {
+  // Cierra la conexión
+  console.log("WebSocket cerrado.");
+}
+
+function enviarNuevoMensaje(evento) {
+  // Evento tecla Enter
+  if (evento.code === 'Enter') {
+    // Envia mensaje por WebSockets
+    miWebSocket.send(miNuevoMensaje.value);
+    // Borra texto en el input
+    miNuevoMensaje.value = '';
+  }
+}
+
+// Eventos de WebSocket
+miWebSocket.addEventListener('open', open);
+miWebSocket.addEventListener('message', message);
+miWebSocket.addEventListener('error', error);
+miWebSocket.addEventListener('close', close);
 
 export default function MiniDrawer() {
   const theme = useTheme();
@@ -319,10 +220,11 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-
-
-
-
+  const onButtonClicked = () => {
+    miWebSocket.send(document.getElementById("inpMessageUser").value);
+    // Borra texto en el input
+    document.getElementById("inpMessageUser").value = '';
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -423,9 +325,6 @@ export default function MiniDrawer() {
 
 
 
-
-
-
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -434,13 +333,40 @@ export default function MiniDrawer() {
           }}
         >
           <Container maxWidth="sm">
-            <AppChat />
+            <div id='contentChat'>
+
+              <div className='content-chat'>
+                <div className="title">
+                  <p id='pNombreUsuario'></p>
+                  {/* <Text type="secondary" style="{{fontSize:'36px'}}">WebSocket chat</Text> */}
+                </div>
+
+                {/* <input type="text" id="nuevo-mensaje" onKeyUp={enviarNuevoMensaje(event)}/> */}
+
+
+                <hr />
+                <input type="text" placeholder='Message' size="large" id="inpMessageUser" className='inp-mensaje' />
+
+
+                <Button onClick={onButtonClicked} className='btn-send-message'>Send message</Button>
+                {/* {state.messages.map(msg => <p>Message: {msg.msg}, user:{msg.user}</p>)} */}
+                <div id="respuestas"></div>
+              </div>
+            </div>
+            <div id='contentInitChat' className='content-chat'>
+              <input type="text" placeholder='Enter username' size="large" onChange={setLoginData} id="inpUsernameChat" className='inp-mensaje' />
+
+              <Button variant="contained" type="submit" onClick={setInitChat} className='btn-send-message'>Join chat</Button>
+              {/* <Search
+                            placeholder="Enter Username"
+                            enterButton="Login"
+                            size="large"
+                            onSearch={value => this.setState({ isLoggedIn: true, userName: value })}
+                        /> */}
+            </div>
           </Container>
+
         </Box>
-
-
-
-
 
 
 

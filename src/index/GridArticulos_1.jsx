@@ -55,15 +55,9 @@ export default function GridArticulos() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const onSubmit = data => {
         console.log(data);
-    }
-    // console.log(watch("SelectCountArticulo"));
-
-    // const { register, handleSubmit } = useForm();
-    // const onSubmit = data => console.log(data);
-  
+    }  
 
     const handleChangeSelect = (event) => {
-        // setCountArticuloBuy(watch("SelectCountArticulo"));
         setCountArticuloBuy(event.target.value);
         let articuloToBuy = {
             count: event.target.value,
