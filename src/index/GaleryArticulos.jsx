@@ -39,18 +39,6 @@ export default function GaleryArticulos() {
           }}
         >
           <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              Articulos
-            </Typography>
-
-            <TituloArticulos />
-
             <Stack
               sx={{ pt: 4 }}
               direction="row"
